@@ -1,0 +1,3602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09090f">
+
+<title>MasterFlix — Age Based Movie Hub</title>
+
+<style>
+:root{
+  --bg:#09090f;
+  --panel:#15151f;
+  --panel2:#1c1c28;
+  --text:#fff;
+  --muted:#aaaabb;
+  --red:#e50914;
+  --red2:#ff2633;
+  --gold:#ffd166;
+  --green:#37d67a;
+  --border:rgba(255,255,255,.08);
+  --shadow:0 20px 60px rgba(0,0,0,.45);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:
+    radial-gradient(circle at 20% 0%,rgba(229,9,20,.12),transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
+
+/* ================= LOGIN ================= */
+
+.login-screen{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+    linear-gradient(135deg,rgba(0,0,0,.88),rgba(9,9,15,.97)),
+    radial-gradient(circle at 50% 20%,rgba(229,9,20,.25),transparent 45%);
+}
+
+.login-screen.hidden{
+  display:none;
+}
+
+.login-box{
+  width:min(430px,100%);
+  padding:38px 30px;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:rgba(21,21,31,.92);
+  backdrop-filter:blur(20px);
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+
+.logo{
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:-1px;
+}
+
+.logo span{
+  color:var(--red);
+}
+
+.login-subtitle{
+  color:var(--muted);
+  margin:10px 0 30px;
+}
+
+.input-group{
+  text-align:left;
+  margin-bottom:18px;
+}
+
+.input-group label{
+  display:block;
+  margin-bottom:8px;
+  color:#ddd;
+  font-size:14px;
+  font-weight:700;
+}
+
+.input-group input{
+  width:100%;
+  padding:15px 16px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#0d0d15;
+  color:#fff;
+  outline:none;
+  font-size:16px;
+  transition:.2s;
+}
+
+.input-group input:focus{
+  border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(229,9,20,.12);
+}
+
+.login-btn{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:15px;
+  background:var(--red);
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.login-btn:hover{
+  background:var(--red2);
+  transform:translateY(-1px);
+}
+
+.login-error{
+  min-height:22px;
+  color:#ff6b73;
+  margin:10px 0;
+  font-size:14px;
+}
+
+.age-preview{
+  margin:18px 0 0;
+  padding:14px;
+  border-radius:14px;
+  background:#101019;
+  border:1px solid var(--border);
+  color:var(--muted);
+  font-size:14px;
+}
+
+.age-preview strong{
+  color:#fff;
+}
+
+/* ================= NAVBAR ================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 5%;
+  background:rgba(9,9,15,.84);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-logo{
+  font-size:26px;
+  font-weight:900;
+}
+
+.nav-logo span{
+  color:var(--red);
+}
+
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.profile-pill{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:9px 13px;
+  border-radius:30px;
+  background:#171721;
+  border:1px solid var(--border);
+  font-size:13px;
+}
+
+.profile-age{
+  color:var(--gold);
+  font-weight:800;
+}
+
+.logout-btn{
+  border:1px solid var(--border);
+  background:#171721;
+  color:#fff;
+  padding:9px 13px;
+  border-radius:9px;
+  cursor:pointer;
+}
+
+/* ================= MAIN ================= */
+
+main{
+  width:min(1500px,92%);
+  margin:auto;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  margin-top:25px;
+  min-height:340px;
+  border-radius:25px;
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  padding:42px;
+  background:
+    linear-gradient(90deg,#09090f 0%,rgba(9,9,15,.86) 35%,rgba(9,9,15,.2) 100%),
+    linear-gradient(0deg,rgba(9,9,15,.95),transparent 55%),
+    url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1800&q=80")
+    center/cover;
+  box-shadow:var(--shadow);
+}
+
+.hero-content{
+  max-width:650px;
+}
+
+.hero-badge{
+  display:inline-block;
+  padding:7px 11px;
+  border-radius:20px;
+  background:rgba(229,9,20,.16);
+  border:1px solid rgba(229,9,20,.35);
+  color:#ff6570;
+  font-size:12px;
+  font-weight:800;
+  margin-bottom:14px;
+}
+
+.hero h1{
+  font-size:clamp(34px,5vw,64px);
+  line-height:.98;
+  margin-bottom:15px;
+}
+
+.hero p{
+  color:#d0d0d8;
+  line-height:1.6;
+  max-width:600px;
+}
+
+.hero-user{
+  margin-top:20px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 15px;
+  border-radius:12px;
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--border);
+}
+
+/* ================= LANGUAGE FILTER ================= */
+.language-filter{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 14px;
+  border-radius:12px;
+  background:#11111a;
+  border:1px solid var(--border);
+}
+.language-filter label{
+  color:#ddd;
+  font-size:13px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.language-filter select{
+  min-width:150px;
+  padding:13px 8px;
+  border:0;
+  outline:none;
+  background:transparent;
+  color:#fff;
+  font-size:14px;
+  cursor:pointer;
+}
+.language-filter option{
+  background:#15151f;
+  color:#fff;
+}
+@media(max-width:750px){
+  .language-filter{width:100%; justify-content:space-between; padding:4px 12px;}
+  .language-filter select{flex:1; min-width:0;}
+}
+
+/* ================= SEARCH ================= */
+
+.search-area{
+  margin:30px 0;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.search-area input{
+  flex:1;
+  min-width:0;
+  padding:15px 18px;
+  border-radius:12px;
+  background:#11111a;
+  border:1px solid var(--border);
+  color:#fff;
+  outline:none;
+  font-size:15px;
+}
+
+.search-area button{
+  border:0;
+  border-radius:12px;
+  background:var(--red);
+  color:#fff;
+  padding:0 22px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* ================= SECTION ================= */
+
+.section{
+  margin:36px 0;
+}
+
+.section-heading{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.section-title{
+  font-size:23px;
+  font-weight:900;
+}
+
+.section-subtitle{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+}
+
+.scroll-buttons{
+  display:flex;
+  gap:8px;
+}
+
+.scroll-buttons button{
+  width:40px;
+  height:40px;
+  border:1px solid var(--border);
+  background:#171721;
+  color:#fff;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:20px;
+}
+
+.scroll-buttons button:hover{
+  background:var(--red);
+}
+
+/* ================= MOVIE ROW ================= */
+
+.movie-row{
+  display:flex;
+  gap:16px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-behavior:smooth;
+  scroll-snap-type:x proximity;
+  padding:5px 3px 16px;
+  scrollbar-width:none;
+}
+
+.movie-row::-webkit-scrollbar{
+  display:none;
+}
+
+.movie-card{
+  flex:0 0 calc((100% - 80px)/6);
+  min-width:160px;
+  max-width:230px;
+  scroll-snap-align:start;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.movie-card:hover{
+  transform:translateY(-7px);
+}
+
+.poster-wrap{
+  position:relative;
+  aspect-ratio:2/3;
+  border-radius:15px;
+  overflow:hidden;
+  background:#171721;
+  border:1px solid var(--border);
+}
+
+.poster-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.movie-rating{
+  position:absolute;
+  top:9px;
+  right:9px;
+  padding:6px 8px;
+  border-radius:8px;
+  background:rgba(0,0,0,.75);
+  font-size:12px;
+  font-weight:800;
+  color:var(--gold);
+}
+
+.movie-age{
+  position:absolute;
+  left:9px;
+  top:9px;
+  padding:5px 8px;
+  border-radius:7px;
+  background:rgba(0,0,0,.78);
+  font-size:11px;
+  font-weight:800;
+}
+
+.movie-info{
+  padding:10px 3px;
+}
+
+.movie-title{
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.movie-meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+  width:100%;
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.spinner{
+  width:28px;
+  height:28px;
+  border:3px solid #333340;
+  border-top-color:var(--red);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  margin:0 auto 10px;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(8px);
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:min(900px,100%);
+  max-height:90vh;
+  overflow-y:auto;
+  background:#15151f;
+  border:1px solid var(--border);
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  position:relative;
+}
+
+.close-modal{
+  position:absolute;
+  right:15px;
+  top:15px;
+  z-index:5;
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:50%;
+  background:rgba(0,0,0,.7);
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.details{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:25px;
+  padding:30px;
+}
+
+.details-poster{
+  width:100%;
+  aspect-ratio:2/3;
+  object-fit:cover;
+  border-radius:15px;
+}
+
+.details-content h2{
+  font-size:32px;
+  margin-bottom:8px;
+  padding-right:40px;
+}
+
+.details-meta{
+  color:var(--muted);
+  line-height:1.8;
+  margin-bottom:15px;
+}
+
+.details-plot{
+  color:#ddd;
+  line-height:1.7;
+  margin-bottom:18px;
+}
+
+.info-line{
+  color:#ccc;
+  margin:7px 0;
+}
+
+.info-line strong{
+  color:#fff;
+}
+
+.action-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:20px;
+}
+
+.action-btn{
+  padding:12px 16px;
+  border:0;
+  border-radius:10px;
+  background:var(--red);
+  color:#fff;
+  cursor:pointer;
+  font-weight:800;
+}
+
+.action-btn.secondary{
+  background:#292936;
+}
+
+/* ================= AGE GUIDE ================= */
+
+.age-guide{
+  margin-top:20px;
+  padding:18px;
+  border-radius:15px;
+  background:#101019;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.age-guide-title{
+  font-size:14px;
+  font-weight:900;
+  color:var(--gold);
+  margin-bottom:8px;
+}
+
+.age-guide-main{
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.age-guide-text{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
+/* ================= SEARCH RESULTS ================= */
+
+.search-results{
+  display:none;
+}
+
+.search-results.show{
+  display:block;
+}
+
+.empty{
+  padding:35px 10px;
+  color:var(--muted);
+  text-align:center;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+  margin-top:60px;
+  padding:30px 5%;
+  border-top:1px solid var(--border);
+  color:#777;
+  text-align:center;
+  font-size:13px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1100px){
+  .movie-card{
+    flex-basis:calc((100% - 48px)/4);
+  }
+}
+
+@media(max-width:750px){
+  header{
+    padding:0 4%;
+  }
+
+  .profile-pill{
+    display:none;
+  }
+
+  main{
+    width:94%;
+  }
+
+  .hero{
+    min-height:390px;
+    padding:25px;
+  }
+
+  .search-area{
+    flex-direction:column;
+  }
+
+  .search-area button{
+    padding:14px;
+  }
+
+  .movie-card{
+    flex-basis:calc((100% - 16px)/2.3);
+    min-width:145px;
+  }
+
+  .details{
+    grid-template-columns:1fr;
+    padding:22px;
+  }
+
+  .details-poster{
+    width:180px;
+    margin:auto;
+  }
+
+  .details-content h2{
+    font-size:25px;
+  }
+}
+
+@media(max-width:450px){
+  .login-box{
+    padding:30px 20px;
+  }
+
+  .nav-logo{
+    font-size:21px;
+  }
+
+  .logout-btn{
+    padding:8px 10px;
+  }
+
+  .hero{
+    min-height:360px;
+  }
+
+  .movie-card{
+    flex-basis:43%;
+  }
+}
+
+/* =========================================================
+   MASTERFLIX FLOATING MOVIES LOGIN
+   Only affects login page
+========================================================= */
+
+.login-screen{
+  overflow:hidden;
+  isolation:isolate;
+}
+
+/* Dark layer behind login box */
+.login-overlay{
+  position:absolute;
+  inset:0;
+  z-index:1;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(9,9,15,.48) 0%,
+      rgba(9,9,15,.78) 48%,
+      rgba(9,9,15,.96) 100%
+    );
+}
+
+/* Floating movie container */
+.floating-movies{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+
+/* Individual poster */
+.floating-movie{
+  position:absolute;
+
+  width:145px;
+  height:210px;
+
+  border-radius:17px;
+  overflow:hidden;
+
+  opacity:.62;
+
+  border:1px solid rgba(255,255,255,.13);
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.55),
+    0 0 35px rgba(229,9,20,.08);
+
+  filter:saturate(.85);
+
+  animation:
+    masterFloat 7s ease-in-out infinite;
+}
+
+/* Poster image */
+.floating-movie img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+
+  transform:scale(1.02);
+}
+
+/* Movie positions */
+
+.fm1{
+  left:5%;
+  top:10%;
+  transform:rotate(-8deg);
+  animation-delay:0s;
+}
+
+.fm2{
+  left:27%;
+  top:3%;
+  transform:rotate(6deg);
+  animation-delay:1.2s;
+}
+
+.fm3{
+  right:5%;
+  top:9%;
+  transform:rotate(8deg);
+  animation-delay:2.1s;
+}
+
+.fm4{
+  left:4%;
+  bottom:8%;
+  transform:rotate(7deg);
+  animation-delay:1.5s;
+}
+
+.fm5{
+  right:27%;
+  bottom:3%;
+  transform:rotate(-6deg);
+  animation-delay:2.8s;
+}
+
+.fm6{
+  right:4%;
+  bottom:9%;
+  transform:rotate(-8deg);
+  animation-delay:.8s;
+}
+
+/* ================= NEW 20 POSTER POSITIONS ================= */
+
+.fm7{
+  left:18%;
+  top:20%;
+  transform:rotate(-5deg);
+  animation-delay:1.7s;
+}
+
+.fm8{
+  right:18%;
+  top:22%;
+  transform:rotate(5deg);
+  animation-delay:3s;
+}
+
+.fm9{
+  left:40%;
+  top:1%;
+  transform:rotate(-4deg);
+  animation-delay:2.4s;
+}
+
+.fm10{
+  right:40%;
+  bottom:1%;
+  transform:rotate(4deg);
+  animation-delay:3.7s;
+}
+
+.fm11{
+  left:11%;
+  top:58%;
+  transform:rotate(-7deg);
+  animation-delay:1s;
+}
+
+.fm12{
+  right:11%;
+  top:57%;
+  transform:rotate(7deg);
+  animation-delay:2s;
+}
+
+.fm13{
+  left:22%;
+  bottom:8%;
+  transform:rotate(5deg);
+  animation-delay:4s;
+}
+
+.fm14{
+  right:22%;
+  bottom:9%;
+  transform:rotate(-5deg);
+  animation-delay:1.5s;
+}
+
+.fm15{
+  left:35%;
+  top:18%;
+  transform:rotate(3deg);
+  animation-delay:2.8s;
+}
+
+.fm16{
+  right:35%;
+  top:19%;
+  transform:rotate(-3deg);
+  animation-delay:3.5s;
+}
+
+.fm17{
+  left:2%;
+  top:42%;
+  transform:rotate(-6deg);
+  animation-delay:4.2s;
+}
+
+.fm18{
+  right:2%;
+  top:43%;
+  transform:rotate(6deg);
+  animation-delay:2.2s;
+}
+
+.fm19{
+  left:32%;
+  bottom:15%;
+  transform:rotate(-4deg);
+  animation-delay:3.2s;
+}
+
+.fm20{
+  right:32%;
+  bottom:15%;
+  transform:rotate(4deg);
+  animation-delay:4.5s;
+}
+
+
+/* Floating animation */
+
+@keyframes posterDrift{
+  0%{ translate:-18px 0; }
+  50%{ translate:22px -8px; }
+  100%{ translate:-12px 10px; }
+}
+
+@keyframes masterFloat{
+
+  0%{
+    margin-top:0;
+    filter:
+      saturate(.85)
+      brightness(.75);
+  }
+
+  25%{
+    margin-top:-16px;
+    filter:
+      saturate(.95)
+      brightness(.82);
+  }
+
+  50%{
+    margin-top:0;
+    filter:
+      saturate(.85)
+      brightness(.75);
+  }
+
+  75%{
+    margin-top:15px;
+    filter:
+      saturate(.95)
+      brightness(.82);
+  }
+
+  100%{
+    margin-top:0;
+    filter:
+      saturate(.85)
+      brightness(.75);
+  }
+
+}
+
+
+/* Keep login box above everything */
+
+.login-screen .login-box{
+  position:relative;
+  z-index:5;
+
+  animation:
+    loginBoxIn .7s ease-out both;
+}
+
+
+@keyframes loginBoxIn{
+
+  from{
+    opacity:0;
+    transform:scale(.94) translateY(15px);
+  }
+
+  to{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
+
+}
+
+
+/* Subtle red glow around login box */
+
+.login-screen .login-box::before{
+  content:"";
+
+  position:absolute;
+  inset:-1px;
+
+  border-radius:25px;
+
+  pointer-events:none;
+
+  box-shadow:
+    0 0 45px rgba(229,9,20,.08);
+}
+
+
+/* Desktop hover depth */
+
+@media(min-width:900px){
+
+  .floating-movie{
+    transition:
+      opacity .3s ease,
+      filter .3s ease;
+  }
+
+}
+
+
+/* Tablet */
+
+@media(max-width:900px){
+
+  .floating-movie{
+    width:115px;
+    height:170px;
+    opacity:.45;
+  }
+
+  .fm2{
+    left:17%;
+  }
+
+  .fm5{
+    right:17%;
+  }
+
+}
+
+
+/* Mobile */
+
+@media(max-width:600px){
+
+  .floating-movie{
+    width:82px;
+    height:120px;
+    opacity:.42;
+   filter:saturate(1.4) contrast(1.05);
+  }
+
+  .fm1{
+    left:-10px;
+    top:8%;
+  }
+
+  .fm2{
+    left:3%;
+    top:2%;
+  }
+
+  .fm3{
+    right:-10px;
+    top:8%;
+  }
+
+  .fm4{
+    left:-10px;
+    bottom:6%;
+  }
+
+  .fm5{
+    right:3%;
+    bottom:2%;
+  }
+
+  .fm6{
+    right:-10px;
+    bottom:6%;
+  }
+
+  .login-screen .login-box{
+    width:min(390px,92%);
+  }
+
+}
+
+
+/* Very small phones */
+
+@media(max-width:380px){
+
+  .floating-movie{
+    width:65px;
+    height:96px;
+    opacity:.34;
+  }
+
+}
+/* =========================================================
+   TOP + BOTTOM CONTINUOUS MOVIE POSTER MARQUEES
+   Movie strips sit along the edges of the login panel.
+========================================================= */
+.poster-marquee{
+  position:absolute;
+  left:0;
+  width:100%;
+  height:clamp(95px, 16vh, 150px);
+  overflow:hidden;
+  z-index:3;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  -webkit-mask-image:linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  mask-image:linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+}
+.poster-marquee.top{top:0;}
+.poster-marquee.bottom{bottom:0;}
+.poster-marquee-track{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  width:max-content;
+  animation:posterMarquee 42s linear infinite;
+  will-change:transform;
+}
+.poster-marquee.bottom .poster-marquee-track{
+  animation-direction:reverse;
+  animation-duration:48s;
+}
+.poster-marquee:hover .poster-marquee-track{animation-play-state:paused;}
+.poster-marquee-card{
+  flex:0 0 auto;
+  width:clamp(72px, 9vw, 118px);
+  height:clamp(98px, 13vw, 142px);
+  border-radius:10px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 7px 25px rgba(0,0,0,.45),0 0 18px rgba(229,9,20,.18);
+  transform:rotate(var(--tilt, -3deg));
+}
+.poster-marquee.bottom .poster-marquee-card{transform:rotate(var(--tilt, 3deg));}
+.poster-marquee-card img{width:100%;height:100%;object-fit:cover;display:block;}
+@keyframes posterMarquee{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+@media(max-width:600px){
+  .poster-marquee{height:95px;}
+  .poster-marquee-track{gap:10px;animation-duration:34s;}
+  .poster-marquee-card{width:66px;height:88px;border-radius:7px;}
+}
+/* Vertical poster lanes fill the open space between the top and bottom strips. */
+.poster-vertical{
+  position:absolute;
+  top:clamp(115px,17vh,165px);
+  bottom:clamp(115px,17vh,165px);
+  width:clamp(72px,10vw,122px);
+  overflow:hidden;
+  z-index:3;
+  pointer-events:none;
+  display:flex;
+  justify-content:center;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(to bottom,transparent,#000 8%,#000 92%,transparent);
+}
+.poster-vertical.left{left:clamp(4px,1.5vw,22px);}
+.poster-vertical.right{right:clamp(4px,1.5vw,22px);}
+.poster-vertical-track{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  height:max-content;
+  animation:posterVerticalScroll 38s linear infinite;
+  will-change:transform;
+}
+.poster-vertical.right .poster-vertical-track{
+  animation-direction:reverse;
+  animation-duration:44s;
+}
+.poster-vertical-card{
+  flex:0 0 auto;
+  width:clamp(68px,8.5vw,104px);
+  height:clamp(94px,12vw,136px);
+  overflow:hidden;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 7px 25px rgba(0,0,0,.48),0 0 18px rgba(229,9,20,.2);
+  transform:rotate(var(--tilt,-3deg));
+}
+.poster-vertical-card img{width:100%;height:100%;object-fit:cover;display:block;}
+@keyframes posterVerticalScroll{
+  from{transform:translateY(0)}
+  to{transform:translateY(-50%)}
+}
+@media(max-width:600px){
+  .poster-vertical{width:66px;top:110px;bottom:110px;}
+  .poster-vertical.left{left:2px;}
+  .poster-vertical.right{right:2px;}
+  .poster-vertical-card{width:58px;height:80px;border-radius:7px;}
+  .poster-vertical-track{gap:9px;animation-duration:30s;}
+}
+@media(max-width:380px){
+  .poster-vertical{width:50px;top:100px;bottom:100px;}
+  .poster-vertical-card{width:46px;height:65px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .floating-movie,.poster-marquee-track,.poster-vertical-track{animation:none!important;}
+}
+</style>
+</head>
+
+<body>
+<!-- ================= LOGIN SCREEN ================= -->
+
+<div class="login-screen" id="loginScreen">
+
+ <!-- FLOATING MOVIES -->
+<div class="floating-movies" id="floatingMovies">
+
+  <div class="floating-movie fm1"></div>
+  <div class="floating-movie fm2"></div>
+  <div class="floating-movie fm3"></div>
+  <div class="floating-movie fm4"></div>
+  <div class="floating-movie fm5"></div>
+  <div class="floating-movie fm6"></div>
+  <div class="floating-movie fm7"></div>
+  <div class="floating-movie fm8"></div>
+  <div class="floating-movie fm9"></div>
+  <div class="floating-movie fm10"></div>
+
+  <div class="floating-movie fm11"></div>
+  <div class="floating-movie fm12"></div>
+  <div class="floating-movie fm13"></div>
+  <div class="floating-movie fm14"></div>
+  <div class="floating-movie fm15"></div>
+  <div class="floating-movie fm16"></div>
+  <div class="floating-movie fm17"></div>
+  <div class="floating-movie fm18"></div>
+  <div class="floating-movie fm19"></div>
+  <div class="floating-movie fm20"></div>
+
+</div>
+
+
+  <!-- DARK OVERLAY -->
+  <div class="login-overlay"></div>
+
+  <!-- MOVING POSTER STRIPS AT TOP AND BOTTOM OF LOGIN CONTAINER -->
+  <div class="poster-marquee top" aria-hidden="true">
+    <div class="poster-marquee-track" id="topPosterTrack"></div>
+  </div>
+  <div class="poster-marquee bottom" aria-hidden="true">
+    <div class="poster-marquee-track" id="bottomPosterTrack"></div>
+  </div>
+  <!-- Vertical scrolling posters in the middle space, kept at the side edges -->
+  <div class="poster-vertical left" aria-hidden="true">
+    <div class="poster-vertical-track" id="leftPosterTrack"></div>
+  </div>
+  <div class="poster-vertical right" aria-hidden="true">
+    <div class="poster-vertical-track" id="rightPosterTrack"></div>
+  </div>
+
+  <!-- LOGIN BOX -->
+  <div class="login-box">
+
+    <div class="logo">
+      Master<span>Flix</span>
+    </div>
+
+    <div class="login-subtitle">
+      Your movies. Your age. Your world.
+    </div>
+
+    <div class="input-group">
+
+      <label for="userName">
+        Your Name
+      </label>
+
+      <input
+        id="userName"
+        type="text"
+        maxlength="30"
+        placeholder="Enter your name"
+        autocomplete="name"
+      >
+
+    </div>
+
+
+    <div class="input-group">
+
+      <label for="userAge">
+        Your Age
+      </label>
+
+      <input
+        id="userAge"
+        type="number"
+        min="1"
+        max="120"
+        placeholder="Enter your age"
+        inputmode="numeric"
+      >
+
+    </div>
+
+
+    <div
+      class="login-error"
+      id="loginError">
+    </div>
+
+
+    <button
+      class="login-btn"
+      id="loginBtn">
+      ENTER MASTERFLIX
+    </button>
+
+
+    <div
+      class="age-preview"
+      id="agePreview">
+      Enter your age to see your movie zone.
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= MAIN APP ================= -->
+
+<div id="app" style="display:none;">
+
+<header>
+
+  <div class="nav-logo">
+    Master<span>Flix</span>
+  </div>
+
+  <div class="nav-right">
+
+    <div class="profile-pill">
+      <span>👤</span>
+      <span id="navName">Guest</span>
+      <span class="profile-age" id="navAge">18+</span>
+    </div>
+
+    <button class="logout-btn" id="logoutBtn">
+      Logout
+    </button>
+
+  </div>
+
+</header>
+
+
+<main>
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="hero-content">
+
+      <div class="hero-badge" id="heroBadge">
+        MASTERFLIX AGE GUIDE
+      </div>
+
+      <h1 id="heroTitle">
+        Welcome to MasterFlix
+      </h1>
+
+      <p id="heroDescription">
+        Movies selected according to your age group.
+      </p>
+
+      <div class="hero-user">
+        🎬 <span id="heroUser">Welcome</span>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- SEARCH -->
+
+  <section class="search-area">
+
+    <div class="language-filter">
+      <label for="languageSelect">🌐 Language</label>
+      <select id="languageSelect">
+        <option value="all">All Languages</option>
+        <option value="Telugu">Telugu</option>
+        <option value="Hindi">Hindi</option>
+        <option value="English">English</option>
+        <option value="Tamil">Tamil</option>
+        <option value="Malayalam">Malayalam</option>
+        <option value="Kannada">Kannada</option>
+        <option value="Bengali">Bengali</option>
+        <option value="Marathi">Marathi</option>
+        <option value="Punjabi">Punjabi</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search movies... e.g. Pushpa, RRR, KGF"
+      autocomplete="off"
+    >
+
+    <button id="searchBtn">
+      🔎 Search
+    </button>
+
+  </section>
+
+
+  <!-- SEARCH RESULTS -->
+
+  <section class="section search-results" id="searchSection">
+
+    <div class="section-heading">
+
+      <div>
+        <div class="section-title">Search Results</div>
+        <div class="section-subtitle">
+          Movies matching your search
+        </div>
+      </div>
+
+    </div>
+
+    <div class="movie-row" id="searchRow"></div>
+
+  </section>
+
+
+  <!-- AGE BASED MAIN ROW -->
+
+  <section class="section">
+
+    <div class="section-heading">
+
+      <div>
+        <div class="section-title" id="ageSectionTitle">
+          Movies For You
+        </div>
+
+        <div class="section-subtitle" id="ageSectionSubtitle">
+          Selected for your age group
+        </div>
+      </div>
+
+      <div class="scroll-buttons">
+        <button onclick="scrollRow('ageRow',-1)">‹</button>
+        <button onclick="scrollRow('ageRow',1)">›</button>
+      </div>
+
+    </div>
+
+    <div class="movie-row" id="ageRow">
+
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading movies...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- SECOND ROW -->
+
+  <section class="section">
+
+    <div class="section-heading">
+
+      <div>
+        <div class="section-title">Popular Picks</div>
+        <div class="section-subtitle">
+          More movies for your profile
+        </div>
+      </div>
+
+      <div class="scroll-buttons">
+        <button onclick="scrollRow('popularRow',-1)">‹</button>
+        <button onclick="scrollRow('popularRow',1)">›</button>
+      </div>
+
+    </div>
+
+    <div class="movie-row" id="popularRow">
+
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading movies...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- THIRD ROW -->
+
+  <section class="section">
+
+    <div class="section-heading">
+
+      <div>
+        <div class="section-title">More To Explore</div>
+        <div class="section-subtitle">
+          Discover movies
+        </div>
+      </div>
+
+      <div class="scroll-buttons">
+        <button onclick="scrollRow('exploreRow',-1)">‹</button>
+        <button onclick="scrollRow('exploreRow',1)">›</button>
+      </div>
+
+    </div>
+
+    <div class="movie-row" id="exploreRow">
+
+      <div class="loading">
+        <div class="spinner"></div>
+        Loading movies...
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+  © 2026 MasterFlix • Age-based movie recommendations
+</footer>
+
+</div>
+
+
+<!-- ================= MOVIE DETAILS MODAL ================= -->
+
+<div class="modal" id="movieModal">
+
+  <div class="modal-box">
+
+    <button class="close-modal" id="closeModal">
+      ×
+    </button>
+
+    <div class="details">
+
+      <img
+        class="details-poster"
+        id="detailsPoster"
+        src=""
+        alt="Movie Poster"
+      >
+
+      <div class="details-content">
+
+        <h2 id="detailsTitle">Movie</h2>
+
+        <div class="details-meta" id="detailsMeta">
+          Loading...
+        </div>
+
+        <div class="details-plot" id="detailsPlot">
+          Loading...
+        </div>
+
+        <div class="info-line">
+          <strong>Director:</strong>
+          <span id="detailsDirector">N/A</span>
+        </div>
+
+        <div class="info-line">
+          <strong>Actors:</strong>
+          <span id="detailsActors">N/A</span>
+        </div>
+
+        <div class="info-line">
+          <strong>Writer:</strong>
+          <span id="detailsWriter">N/A</span>
+        </div>
+
+        <div class="info-line">
+          <strong>Country:</strong>
+          <span id="detailsCountry">N/A</span>
+        </div>
+
+        <div class="info-line">
+          <strong>Released:</strong>
+          <span id="detailsReleased">N/A</span>
+        </div>
+
+        <div class="info-line">
+          <strong>IMDb:</strong>
+          ⭐ <span id="detailsRating">N/A</span>
+          • <span id="detailsVotes">N/A</span> votes
+        </div>
+
+
+        <!-- AGE GUIDE -->
+
+        <div class="age-guide">
+
+          <div class="age-guide-title">
+            MASTERFLIX AGE GUIDE
+          </div>
+
+          <div class="age-guide-main" id="movieAgeGuide">
+            16+
+          </div>
+
+          <div class="age-guide-text" id="movieAgeText">
+            Content-based recommendation.
+          </div>
+
+        </div>
+
+
+        <div class="action-row">
+
+          <button class="action-btn" id="trailerBtn">
+            ▶ Find Trailer
+          </button>
+
+          <button
+            class="action-btn secondary"
+            id="closeDetailsBtn"
+          >
+            Close
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+/* =========================================================
+   MASTERFLIX
+   OMDb + AGE BASED MOVIE SYSTEM
+========================================================= */
+
+const OMDB_KEY = "2a6b639a";
+const OMDB_BASE = "https://www.omdbapi.com/";
+
+const FALLBACK_POSTER =
+  "data:image/svg+xml;charset=UTF-8," +
+  encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750">
+      <rect width="500" height="750" fill="#15151f"/>
+      <text x="250" y="340" text-anchor="middle"
+            fill="#ffffff" font-family="Arial" font-size="34" font-weight="700">
+        MASTERFLIX
+      </text>
+      <text x="250" y="390" text-anchor="middle"
+            fill="#aaaabb" font-family="Arial" font-size="24">
+        No Poster Available
+      </text>
+    </svg>
+  `);
+
+
+/* =========================================================
+   20 FLOATING LOGIN POSTERS
+========================================================= */
+
+const floatingMovieTitles = [
+  "Pushpa",
+  "RRR",
+  "KGF",
+  "Jawan",
+  "Vikram",
+  "Salaar",
+  "Kalki 2898 AD",
+  "Leo",
+  "Baahubali: The Beginning",
+  "Baahubali 2: The Conclusion",
+  "Jersey",
+  "Premam",
+  "Arjun Reddy",
+  "Dangal",
+  "3 Idiots",
+  "Interstellar",
+  "Inception",
+  "The Dark Knight",
+  "Avengers: Endgame",
+  "Drishyam"
+];
+
+
+async function loadFloatingMoviePosters(){
+
+  const container =
+    document.getElementById("floatingMovies");
+
+  if(!container) return;
+
+  const posterBoxes =
+    container.querySelectorAll(".floating-movie");
+
+  const requests =
+    floatingMovieTitles.map(async(title,index)=>{
+
+      try{
+
+        const response =
+          await fetch(
+            `${OMDB_BASE}?apikey=${OMDB_KEY}&t=${encodeURIComponent(title)}&type=movie`
+          );
+
+        if(!response.ok) return;
+
+        const movie =
+          await response.json();
+
+        if(posterBoxes[index]){
+
+          const poster =
+            movie.Response === "True" &&
+            movie.Poster &&
+            movie.Poster !== "N/A"
+              ? movie.Poster
+              : FALLBACK_POSTER;
+
+          posterBoxes[index].innerHTML = `
+            <img
+              src="${escapeHtml(poster)}"
+              alt="${escapeHtml(movie.Title || title)}"
+              loading="eager"
+              referrerpolicy="no-referrer"
+              onerror="this.onerror=null;this.src='${FALLBACK_POSTER}'"
+            >
+          `;
+
+        }
+
+      }catch(error){
+
+        console.warn(
+          "Floating poster failed:",
+          title
+        );
+
+      }
+
+    });
+
+  await Promise.allSettled(requests);
+
+  // Reuse the fetched movie posters in two seamless scrolling rows.
+  buildPosterMarquees();
+}
+
+function buildPosterMarquees(){
+  const sourceImages = Array.from(
+    document.querySelectorAll('#floatingMovies .floating-movie img')
+  ).filter(img => img.src && !img.src.includes('data:'));
+
+  if(!sourceImages.length) return;
+
+  ['topPosterTrack','bottomPosterTrack'].forEach((trackId, rowIndex)=>{
+    const track = document.getElementById(trackId);
+    if(!track) return;
+    track.innerHTML = '';
+
+    // Two identical sets make the horizontal -50% marquee loop seamless.
+    for(let pass=0; pass<2; pass++){
+      sourceImages.forEach((source, index)=>{
+        const card = document.createElement('div');
+        card.className = 'poster-marquee-card';
+        card.style.setProperty('--tilt', `${((index % 7)-3) * (rowIndex ? -1 : 1)}deg`);
+        const img = document.createElement('img');
+        img.src = source.currentSrc || source.src;
+        img.alt = '';
+        img.loading = 'eager';
+        img.referrerPolicy = 'no-referrer';
+        card.appendChild(img);
+        track.appendChild(card);
+      });
+    }
+  });
+
+  // Fill both middle side lanes with the same posters, duplicated for a seamless vertical loop.
+  ['leftPosterTrack','rightPosterTrack'].forEach((trackId, laneIndex)=>{
+    const track = document.getElementById(trackId);
+    if(!track) return;
+    track.innerHTML = '';
+    for(let pass=0; pass<2; pass++){
+      sourceImages.forEach((source, index)=>{
+        const card = document.createElement('div');
+        card.className = 'poster-vertical-card';
+        card.style.setProperty('--tilt', `${((index % 5)-2) * (laneIndex ? -1 : 1)}deg`);
+        const img = document.createElement('img');
+        img.src = source.currentSrc || source.src;
+        img.alt = '';
+        img.loading = 'eager';
+        img.referrerPolicy = 'no-referrer';
+        card.appendChild(img);
+        track.appendChild(card);
+      });
+    }
+  });
+}
+
+
+/* =========================================================
+   USER PROFILE
+========================================================= */
+
+let currentUser = null;
+let currentMovie = null;
+
+
+/* =========================================================
+   AGE GROUP
+========================================================= */
+
+function getAgeGroup(age){
+
+  age = Number(age);
+
+  if(age < 8){
+    return {
+      id:"kids",
+      label:"Kids",
+      icon:"🧸",
+      badge:"KIDS ZONE",
+      title:"Fun & Safe Movies",
+      description:"Animated, fun and family-friendly movies selected for young viewers."
+    };
+  }
+
+  if(age <= 12){
+    return {
+      id:"family",
+      label:"Kids & Family",
+      icon:"🌈",
+      badge:"KIDS & FAMILY",
+      title:"Adventure Starts Here",
+      description:"Family adventures, animation, comedy and exciting stories."
+    };
+  }
+
+  if(age < 18){
+    return {
+      id:"teen",
+      label:"Teen",
+      icon:"🎒",
+      badge:"TEEN ZONE",
+      title:"Movies For Your Age",
+      description:"Teen-friendly adventures, drama, comedy, action and coming-of-age stories."
+    };
+  }
+
+  if(age <= 39){
+    return {
+      id:"adult",
+      label:"Adult",
+      icon:"🔥",
+      badge:"18+ ZONE",
+      title:"Your Entertainment Zone",
+      description:"Action, drama, thrillers, crime, comedy and adult-oriented cinema."
+    };
+  }
+
+  return {
+    id:"mature",
+    label:"Classic & Mature",
+    icon:"⭐",
+    badge:"40+ COLLECTION",
+    title:"Timeless Cinema",
+    description:"Classic stories, family dramas, evergreen cinema and mature entertainment."
+  };
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+const loginScreen =
+  document.getElementById("loginScreen");
+
+const app =
+  document.getElementById("app");
+
+const userNameInput =
+  document.getElementById("userName");
+
+const userAgeInput =
+  document.getElementById("userAge");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const loginError =
+  document.getElementById("loginError");
+
+const agePreview =
+  document.getElementById("agePreview");
+
+
+userAgeInput.addEventListener("input",()=>{
+
+  const age =
+    Number(userAgeInput.value);
+
+  if(!age){
+
+    agePreview.innerHTML =
+      "Enter your age to see your movie zone.";
+
+    return;
+  }
+
+  if(age < 1 || age > 120){
+
+    agePreview.innerHTML =
+      "Please enter a valid age between 1 and 120.";
+
+    return;
+  }
+
+  const group =
+    getAgeGroup(age);
+
+  agePreview.innerHTML =
+    `${group.icon} Your zone: <strong>${group.label}</strong>`;
+});
+
+
+loginBtn.addEventListener(
+  "click",
+  login
+);
+
+
+userNameInput.addEventListener("keydown",e=>{
+
+  if(e.key === "Enter"){
+    login();
+  }
+
+});
+
+
+userAgeInput.addEventListener("keydown",e=>{
+
+  if(e.key === "Enter"){
+    login();
+  }
+
+});
+
+
+function login(){
+
+  const name =
+    userNameInput.value.trim();
+
+  const age =
+    Number(userAgeInput.value);
+
+  loginError.textContent = "";
+
+  if(!name){
+
+    loginError.textContent =
+      "Please enter your name.";
+
+    userNameInput.focus();
+
+    return;
+  }
+
+  if(
+    !Number.isInteger(age) ||
+    age < 1 ||
+    age > 120
+  ){
+
+    loginError.textContent =
+      "Please enter a valid age between 1 and 120.";
+
+    userAgeInput.focus();
+
+    return;
+  }
+
+  currentUser = {
+    name:name,
+    age:age
+  };
+
+  sessionStorage.setItem(
+    "masterflixUser",
+    JSON.stringify(currentUser)
+  );
+
+  startApp();
+}
+
+
+/* =========================================================
+   START APP
+========================================================= */
+
+async function startApp(){
+
+  if(!currentUser) return;
+
+  loginScreen.classList.add("hidden");
+
+  app.style.display = "block";
+
+  const group =
+    getAgeGroup(currentUser.age);
+
+  document.getElementById("navName").textContent =
+    currentUser.name;
+
+  document.getElementById("navAge").textContent =
+    currentUser.age + "+";
+
+  document.getElementById("heroBadge").textContent =
+    group.icon + " " + group.badge;
+
+  document.getElementById("heroTitle").textContent =
+    group.title;
+
+  document.getElementById("heroDescription").textContent =
+    group.description;
+
+  document.getElementById("heroUser").textContent =
+    `Welcome ${currentUser.name} • ${group.label}`;
+
+  document.getElementById("ageSectionTitle").textContent =
+    `${group.icon} ${group.label} Movies`;
+
+  document.getElementById("ageSectionSubtitle").textContent =
+    `Movies selected for viewers aged ${currentUser.age}`;
+
+  await loadAgeMovies();
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener("click",()=>{
+
+    sessionStorage.removeItem(
+      "masterflixUser"
+    );
+
+    currentUser = null;
+    currentMovie = null;
+
+    app.style.display = "none";
+
+    loginScreen.classList.remove("hidden");
+
+    userNameInput.value = "";
+    userAgeInput.value = "";
+
+    loginError.textContent = "";
+
+    agePreview.textContent =
+      "Enter your age to see your movie zone.";
+
+    document.getElementById("searchInput").value = "";
+
+    document
+      .getElementById("searchSection")
+      .classList.remove("show");
+
+    document
+      .getElementById("searchRow")
+      .innerHTML = "";
+
+    document
+      .getElementById("ageRow")
+      .innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading movies...
+        </div>
+      `;
+
+    document
+      .getElementById("popularRow")
+      .innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading movies...
+        </div>
+      `;
+
+    document
+      .getElementById("exploreRow")
+      .innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          Loading movies...
+        </div>
+      `;
+
+  });
+
+
+/* =========================================================
+   API
+========================================================= */
+
+async function omdbSearch(query){
+
+  if(!query) return [];
+
+  const url =
+    `${OMDB_BASE}?apikey=${OMDB_KEY}&s=${encodeURIComponent(query)}&type=movie`;
+
+  try{
+
+    const response =
+      await fetch(url);
+
+    if(!response.ok){
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+
+    }
+
+    const data =
+      await response.json();
+
+    if(data.Response !== "True"){
+
+      console.warn(
+        "OMDb Search:",
+        data.Error || "No results"
+      );
+
+      return [];
+    }
+
+    return Array.isArray(data.Search)
+      ? data.Search
+      : [];
+
+  }catch(error){
+
+    console.error(
+      "OMDb Search Error:",
+      error
+    );
+
+    return [];
+  }
+}
+
+
+async function omdbDetails(imdbID){
+
+  if(!imdbID) return null;
+
+  const url =
+    `${OMDB_BASE}?apikey=${OMDB_KEY}&i=${encodeURIComponent(imdbID)}&plot=full`;
+
+  try{
+
+    const response =
+      await fetch(url);
+
+    if(!response.ok){
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+
+    }
+
+    const data =
+      await response.json();
+
+    if(data.Response !== "True"){
+
+      throw new Error(
+        data.Error || "Movie not found"
+      );
+
+    }
+
+    return data;
+
+  }catch(error){
+
+    console.error(
+      "OMDb Details Error:",
+      error
+    );
+
+    return null;
+  }
+}
+
+
+/* =========================================================
+   MOVIE DATABASE QUERIES
+========================================================= */
+
+const movieQueries = {
+
+  kids:[
+    "Frozen",
+    "Toy Story",
+    "Moana",
+    "Coco",
+    "Paddington",
+    "The Lion King"
+  ],
+
+  family:[
+    "Harry Potter",
+    "Jumanji",
+    "Narnia",
+    "Matilda",
+    "Home Alone",
+    "Paddington"
+  ],
+
+  teen:[
+    "Spider-Man",
+    "Harry Potter",
+    "The Hunger Games",
+    "Maze Runner",
+    "Jersey",
+    "Premam"
+  ],
+
+  adult:[
+    "Pushpa",
+    "RRR",
+    "KGF",
+    "Jawan",
+    "Vikram",
+    "Salaar",
+    "Kalki 2898 AD",
+    "Leo"
+  ],
+
+  mature:[
+    "Drishyam",
+    "The Shawshank Redemption",
+    "Forrest Gump",
+    "Titanic",
+    "3 Idiots",
+    "Swades",
+    "Lagaan",
+    "The Godfather"
+  ]
+
+};
+
+
+/* =========================================================
+   LOAD AGE MOVIES
+========================================================= */
+
+async function loadAgeMovies(){
+
+  if(!currentUser) return;
+
+  const group =
+    getAgeGroup(currentUser.age);
+
+  const queries =
+    movieQueries[group.id] ||
+    movieQueries.adult;
+
+  const row =
+    document.getElementById("ageRow");
+
+  row.innerHTML =
+    `<div class="loading">
+      <div class="spinner"></div>
+      Loading ${group.label} movies...
+    </div>`;
+
+  const results = [];
+
+  for(const query of queries){
+
+    if(!currentUser) return;
+
+    const movies =
+      await omdbSearch(query);
+
+    movies.forEach(movie=>{
+
+      if(
+        movie &&
+        movie.imdbID &&
+        !results.some(
+          x=>x.imdbID === movie.imdbID
+        )
+      ){
+
+        results.push(movie);
+      }
+
+    });
+
+    if(results.length >= 12){
+      break;
+    }
+  }
+
+  const suitableMovies =
+    await filterMoviesByUserAge(results);
+
+  if(!currentUser) return;
+
+  const languageMovies =
+    await filterMoviesByLanguage(suitableMovies);
+
+  if(!currentUser) return;
+
+  renderMovies(
+    row,
+    languageMovies
+      .filter(isValidMovie)
+      .slice(0,18)
+  );
+
+  await loadExtraRows();
+}
+
+
+/* =========================================================
+   EXTRA MOVIE ROWS
+========================================================= */
+
+async function loadExtraRows(){
+
+  if(!currentUser) return;
+
+  const group =
+    getAgeGroup(currentUser.age);
+
+  let queries = [];
+
+  if(group.id === "kids"){
+
+    queries = [
+      "Disney",
+      "Pixar",
+      "Animation"
+    ];
+
+  }
+  else if(group.id === "family"){
+
+    queries = [
+      "Family",
+      "Adventure",
+      "Animation"
+    ];
+
+  }
+  else if(group.id === "teen"){
+
+    queries = [
+      "Adventure",
+      "Teen",
+      "Drama"
+    ];
+
+  }
+  else if(group.id === "adult"){
+
+    queries = [
+      "Action",
+      "Thriller",
+      "Drama"
+    ];
+
+  }
+  else{
+
+    queries = [
+      "Drama",
+      "Classic",
+      "Family"
+    ];
+
+  }
+
+
+  const popularResults =
+    await collectSearchResults(
+      queries,
+      18
+    );
+
+  if(!currentUser) return;
+
+  const popularAgeFiltered =
+    await filterMoviesByUserAge(
+      popularResults
+    );
+
+  const popular =
+    await filterMoviesByLanguage(
+      popularAgeFiltered
+    );
+
+  if(!currentUser) return;
+
+  renderMovies(
+    document.getElementById("popularRow"),
+    popular
+  );
+
+
+  const exploreResults =
+    await collectSearchResults(
+      [
+        "Indian Cinema",
+        "Movie",
+        "Cinema"
+      ],
+      18
+    );
+
+  if(!currentUser) return;
+
+  const exploreAgeFiltered =
+    await filterMoviesByUserAge(
+      exploreResults
+    );
+
+  const explore =
+    await filterMoviesByLanguage(
+      exploreAgeFiltered
+    );
+
+  if(!currentUser) return;
+
+  renderMovies(
+    document.getElementById("exploreRow"),
+    explore
+  );
+}
+
+
+async function collectSearchResults(
+  queries,
+  limit=18
+){
+
+  const results = [];
+
+  for(const query of queries){
+
+    const movies =
+      await omdbSearch(query);
+
+    for(const movie of movies){
+
+      if(
+        movie &&
+        movie.imdbID &&
+        !results.some(
+          item=>item.imdbID === movie.imdbID
+        )
+      ){
+
+        results.push(movie);
+      }
+
+      if(results.length >= limit){
+        break;
+      }
+
+    }
+
+    if(results.length >= limit){
+      break;
+    }
+  }
+
+  return results;
+}
+
+
+/* =========================================================
+   VALID MOVIE
+========================================================= */
+
+function isValidMovie(movie){
+
+  if(!movie) return false;
+
+  const yearText =
+    String(movie.Year || "");
+
+  const match =
+    yearText.match(/\d{4}/);
+
+  if(!match) return false;
+
+  const year =
+    Number(match[0]);
+
+  if(
+    year < 1990 ||
+    year > 2026
+  ){
+    return false;
+  }
+
+  // Do NOT reject movies only because OMDb has no poster.
+  // The card renderer supplies a fallback poster instead.
+  return Boolean(movie.imdbID);
+}
+
+
+/* =========================================================
+   RENDER MOVIES
+   FIXED:
+   - Removed duplicate function
+   - Correct closing braces
+   - Invalid movies filtered
+========================================================= */
+
+function renderMovies(row,movies){
+
+  if(!row) return;
+
+  const safeMovies =
+    Array.isArray(movies)
+      ? movies.filter(isValidMovie)
+      : [];
+
+  row.innerHTML = "";
+
+  if(!safeMovies.length){
+
+    row.innerHTML =
+      `<div class="empty">
+        No movies found right now.
+      </div>`;
+
+    return;
+  }
+
+  safeMovies.forEach(movie=>{
+
+    const card =
+      createMovieCard(movie);
+
+    if(card){
+      row.appendChild(card);
+    }
+
+  });
+}
+
+
+/* =========================================================
+   MOVIE CARD
+========================================================= */
+
+function createMovieCard(movie){
+
+  if(!movie || !movie.imdbID){
+    return null;
+  }
+
+  const card =
+    document.createElement("article");
+
+  card.className =
+    "movie-card";
+
+  const poster =
+    movie.Poster && movie.Poster !== "N/A"
+      ? movie.Poster
+      : FALLBACK_POSTER;
+
+  const rating =
+    movie.imdbRating &&
+    movie.imdbRating !== "N/A"
+      ? movie.imdbRating
+      : "N/A";
+
+  const year =
+    movie.Year || "N/A";
+
+  const ageGuide =
+    currentUser
+      ? getAgeGuide(currentUser.age).age
+      : "N/A";
+
+  card.innerHTML = `
+
+    <div class="poster-wrap">
+
+      <img
+        src="${escapeHtml(poster)}"
+        alt="${escapeHtml(movie.Title || "Movie")}"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        onerror="this.onerror=null;this.src='${FALLBACK_POSTER}'"
+      >
+
+      <div class="movie-rating">
+        ⭐ ${escapeHtml(rating)}
+      </div>
+
+      <div class="movie-age">
+        ${escapeHtml(ageGuide)}
+      </div>
+
+    </div>
+
+    <div class="movie-info">
+
+      <div class="movie-title">
+        ${escapeHtml(movie.Title || "Unknown Movie")}
+      </div>
+
+      <div class="movie-meta">
+        ${escapeHtml(year)}
+        • IMDb
+      </div>
+
+    </div>
+  `;
+
+
+  card.addEventListener("click",()=>{
+
+    if(movie.imdbID){
+      openDetails(movie.imdbID);
+    }
+
+  });
+
+
+  card.addEventListener("keydown",e=>{
+
+    if(e.key === "Enter" && movie.imdbID){
+      openDetails(movie.imdbID);
+    }
+
+  });
+
+
+  card.tabIndex = 0;
+
+  return card;
+}
+
+
+/* =========================================================
+   AGE GUIDE
+========================================================= */
+
+function getAgeGuide(age){
+
+  age = Number(age);
+
+  if(age < 8){
+
+    return {
+      age:"Kids",
+      recommendation:
+        "Recommended for young viewers."
+    };
+
+  }
+
+  if(age <= 12){
+
+    return {
+      age:"8–12",
+      recommendation:
+        "Recommended for kids and family viewing."
+    };
+
+  }
+
+  if(age < 18){
+
+    return {
+      age:"Teen",
+      recommendation:
+        "Recommended for teen viewers, subject to movie content."
+    };
+
+  }
+
+  if(age <= 39){
+
+    return {
+      age:"18+",
+      recommendation:
+        "Adult-oriented recommendation. Check movie content."
+    };
+
+  }
+
+  return {
+    age:"40+",
+    recommendation:
+      "Classic and mature entertainment recommendation."
+  };
+}
+
+
+/* =========================================================
+   FILTER MOVIES BY USER AGE
+========================================================= */
+
+async function filterMoviesByUserAge(movies){
+
+  if(!currentUser) return [];
+
+  if(!Array.isArray(movies)){
+    return [];
+  }
+
+  const userAge =
+    Number(currentUser.age);
+
+  /*
+    Adults already have access to the adult/general rows.
+    Minors are checked against movie details.
+  */
+
+  if(userAge >= 18){
+
+    return movies.filter(isValidMovie);
+  }
+
+
+  const validMovies =
+    movies.filter(isValidMovie);
+
+
+  const checkedMovies =
+    await Promise.all(
+
+      validMovies.map(async movie=>{
+
+        try{
+
+          const details =
+            await omdbDetails(
+              movie.imdbID
+            );
+
+          if(!details){
+            return null;
+          }
+
+          const guide =
+            calculateMovieAge(details);
+
+          const ageText =
+            guide.age;
+
+          let movieMaxAge = 0;
+
+          if(ageText === "7+"){
+            movieMaxAge = 7;
+          }
+          else if(ageText === "13+"){
+            movieMaxAge = 13;
+          }
+          else if(ageText === "16+"){
+            movieMaxAge = 16;
+          }
+          else if(ageText === "18+"){
+            movieMaxAge = 18;
+          }
+
+          return movieMaxAge <= userAge
+            ? movie
+            : null;
+
+        }catch(error){
+
+          console.warn(
+            "Age filter failed:",
+            movie.Title || movie.imdbID
+          );
+
+          return null;
+        }
+
+      })
+
+    );
+
+  return checkedMovies.filter(Boolean);
+}
+
+
+/* =========================================================
+   CONTENT BASED MOVIE AGE GUIDE
+========================================================= */
+
+function calculateMovieAge(movie){
+
+  const genre =
+    (movie.Genre || "").toLowerCase();
+
+  const plot =
+    (movie.Plot || "").toLowerCase();
+
+  const rated =
+    (movie.Rated || "").toUpperCase();
+
+  const text =
+    genre + " " + plot + " " + rated;
+
+  let score = 0;
+
+  const reasons = [];
+
+
+  const severeWords = [
+    "murder",
+    "serial killer",
+    "rape",
+    "sexual",
+    "sex",
+    "torture",
+    "graphic violence"
+  ];
+
+
+  const strongWords = [
+    "killing",
+    "kill",
+    "blood",
+    "violent",
+    "violence",
+    "gang",
+    "mafia",
+    "drug",
+    "drugs",
+    "crime",
+    "revenge",
+    "smuggling",
+    "weapon",
+    "shooting"
+  ];
+
+
+  const mildWords = [
+    "fight",
+    "battle",
+    "danger",
+    "war",
+    "action",
+    "threat",
+    "robbery"
+  ];
+
+
+  severeWords.forEach(word=>{
+
+    if(text.includes(word)){
+
+      score += 4;
+
+      reasons.push(word);
+    }
+
+  });
+
+
+  strongWords.forEach(word=>{
+
+    if(text.includes(word)){
+
+      score += 2;
+
+      reasons.push(word);
+    }
+
+  });
+
+
+  mildWords.forEach(word=>{
+
+    if(text.includes(word)){
+
+      score += 1;
+
+      reasons.push(word);
+    }
+
+  });
+
+
+  if(
+    genre.includes("horror") ||
+    genre.includes("thriller")
+  ){
+
+    score += 2;
+  }
+
+
+  if(
+    genre.includes("crime") ||
+    genre.includes("war")
+  ){
+
+    score += 2;
+  }
+
+
+  /*
+    OMDb ratings can strengthen the guide,
+    but MasterFlix does NOT treat this as
+    official CBFC certification.
+  */
+
+  if(rated === "R"){
+    score += 4;
+  }
+
+  if(rated === "NC-17"){
+    score += 6;
+  }
+
+  if(rated === "PG-13"){
+    score += 2;
+  }
+
+
+  let age = "All Ages";
+
+
+  if(score >= 8){
+
+    age = "18+";
+
+  }
+  else if(score >= 5){
+
+    age = "16+";
+
+  }
+  else if(score >= 3){
+
+    age = "13+";
+
+  }
+  else if(score >= 1){
+
+    age = "7+";
+
+  }
+
+
+  return {
+    age,
+    reasons:[
+      ...new Set(reasons)
+    ].slice(0,5)
+  };
+}
+
+
+/* =========================================================
+   DETAILS
+========================================================= */
+
+async function openDetails(imdbID){
+
+  if(!imdbID) return;
+
+  const modal =
+    document.getElementById("movieModal");
+
+  modal.classList.add("show");
+
+
+  document.getElementById(
+    "detailsTitle"
+  ).textContent = "Loading...";
+
+
+  document.getElementById(
+    "detailsPlot"
+  ).textContent =
+    "Loading movie details...";
+
+
+  document.getElementById(
+    "detailsMeta"
+  ).textContent =
+    "Loading...";
+
+
+  const movie =
+    await omdbDetails(imdbID);
+
+
+  if(!movie){
+
+    document.getElementById(
+      "detailsTitle"
+    ).textContent =
+      "Movie unavailable";
+
+
+    document.getElementById(
+      "detailsPlot"
+    ).textContent =
+      "Unable to load movie details right now.";
+
+    return;
+  }
+
+
+  currentMovie = movie;
+
+
+  const poster =
+    movie.Poster &&
+    movie.Poster !== "N/A"
+      ? movie.Poster
+      : FALLBACK_POSTER;
+
+
+  const detailsPoster =
+    document.getElementById(
+      "detailsPoster"
+    );
+
+
+  detailsPoster.src = poster;
+
+
+  detailsPoster.onerror =
+    function(){
+
+      this.onerror = null;
+
+      this.src =
+        FALLBACK_POSTER;
+    };
+
+
+  document.getElementById(
+    "detailsTitle"
+  ).textContent =
+    movie.Title || "Unknown";
+
+
+  document.getElementById(
+    "detailsMeta"
+  ).textContent =
+    `${movie.Year || "N/A"} • ` +
+    `${movie.Runtime || "N/A"} • ` +
+    `${movie.Genre || "N/A"} • ` +
+    `${movie.Language || "N/A"}`;
+
+
+  document.getElementById(
+    "detailsPlot"
+  ).textContent =
+    movie.Plot &&
+    movie.Plot !== "N/A"
+      ? movie.Plot
+      : "Plot information unavailable.";
+
+
+  document.getElementById(
+    "detailsDirector"
+  ).textContent =
+    movie.Director || "N/A";
+
+
+  document.getElementById(
+    "detailsActors"
+  ).textContent =
+    movie.Actors || "N/A";
+
+
+  document.getElementById(
+    "detailsWriter"
+  ).textContent =
+    movie.Writer || "N/A";
+
+
+  document.getElementById(
+    "detailsCountry"
+  ).textContent =
+    movie.Country || "N/A";
+
+
+  document.getElementById(
+    "detailsReleased"
+  ).textContent =
+    movie.Released || "N/A";
+
+
+  document.getElementById(
+    "detailsRating"
+  ).textContent =
+    movie.imdbRating &&
+    movie.imdbRating !== "N/A"
+      ? movie.imdbRating
+      : "N/A";
+
+
+  document.getElementById(
+    "detailsVotes"
+  ).textContent =
+    movie.imdbVotes || "N/A";
+
+
+  const guide =
+    calculateMovieAge(movie);
+
+
+  document.getElementById(
+    "movieAgeGuide"
+  ).textContent =
+    `Recommended Age: ${guide.age}`;
+
+
+  let reasonText =
+    "This is a MasterFlix content-based age recommendation, not an official CBFC certification.";
+
+
+  if(guide.reasons.length){
+
+    reasonText +=
+      ` Content indicators detected: ${guide.reasons.join(", ")}.`;
+  }
+
+
+  document.getElementById(
+    "movieAgeText"
+  ).textContent =
+    reasonText;
+
+
+  // Open the movie's official-trailer search directly from the click.
+  // This avoids popup-blocker issues caused by delayed/asynchronous opens.
+  const trailerButton = document.getElementById("trailerBtn");
+  trailerButton.onclick = () => {
+
+    if (!currentMovie) return;
+
+    const title = currentMovie.Title || movie.Title || "";
+    const year = currentMovie.Year || movie.Year || "";
+    const search = encodeURIComponent(
+      `${title} ${year} official trailer`
+    );
+
+    const trailerUrl =
+      `https://www.youtube.com/results?search_query=${search}`;
+
+    const trailerWindow = window.open(
+      trailerUrl,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    // Fallback for browsers that block opening a new tab.
+    if (!trailerWindow) {
+      window.location.href = trailerUrl;
+    }
+  };
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeModal(){
+
+  document
+    .getElementById("movieModal")
+    .classList.remove("show");
+
+  currentMovie = null;
+}
+
+
+document
+  .getElementById("closeModal")
+  .addEventListener(
+    "click",
+    closeModal
+  );
+
+
+document
+  .getElementById("closeDetailsBtn")
+  .addEventListener(
+    "click",
+    closeModal
+  );
+
+
+document
+  .getElementById("movieModal")
+  .addEventListener(
+    "click",
+    e=>{
+
+      if(e.target.id === "movieModal"){
+        closeModal();
+      }
+
+    }
+  );
+
+
+document.addEventListener(
+  "keydown",
+  e=>{
+
+    if(e.key === "Escape"){
+      closeModal();
+    }
+
+  }
+);
+
+
+/* =========================================================
+   HORIZONTAL SCROLL
+========================================================= */
+
+function scrollRow(
+  rowID,
+  direction
+){
+
+  const row =
+    document.getElementById(rowID);
+
+  if(!row) return;
+
+  const amount =
+    Math.max(
+      320,
+      Math.floor(
+        row.clientWidth * .75
+      )
+    );
+
+
+  row.scrollBy({
+    left:direction * amount,
+    behavior:"smooth"
+  });
+}
+
+
+/* =========================================================
+   LANGUAGE FILTER
+========================================================= */
+
+const languageSelect =
+  document.getElementById("languageSelect");
+
+function movieMatchesLanguage(movie, selectedLanguage){
+  if(selectedLanguage === "all") return true;
+
+  const language = String(movie?.Language || "").toLowerCase();
+  if(!language || language === "n/a") return false;
+
+  if(selectedLanguage === "Other") {
+    const common = ["telugu","hindi","english","tamil","malayalam","kannada","bengali","marathi","punjabi"];
+    return !common.some(lang => language.includes(lang));
+  }
+
+  return language.includes(selectedLanguage.toLowerCase());
+}
+
+async function filterMoviesByLanguage(movies){
+  if(!Array.isArray(movies)) return [];
+  const selectedLanguage = languageSelect?.value || "all";
+  if(selectedLanguage === "all") return movies;
+
+  const detailed = await Promise.all(
+    movies.map(async movie => {
+      if(movie?.Language && movie.Language !== "N/A") return movie;
+      const details = await omdbDetails(movie?.imdbID);
+      return details || movie;
+    })
+  );
+
+  return detailed.filter(movie => movieMatchesLanguage(movie, selectedLanguage));
+}
+
+async function refreshForLanguage(){
+  if(!currentUser) return;
+  await loadAgeMovies();
+}
+
+if(languageSelect){
+  languageSelect.addEventListener("change", refreshForLanguage);
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+
+const searchBtn =
+  document.getElementById(
+    "searchBtn"
+  );
+
+
+searchBtn.addEventListener(
+  "click",
+  performSearch
+);
+
+
+searchInput.addEventListener(
+  "keydown",
+  e=>{
+
+    if(e.key === "Enter"){
+      performSearch();
+    }
+
+  }
+);
+
+
+/*
+  IMPORTANT FIX:
+  Search results are also passed through
+  filterMoviesByUserAge().
+  This prevents minors from bypassing
+  the age filter through search.
+*/
+
+async function performSearch(){
+
+  const query =
+    searchInput.value.trim();
+
+  const section =
+    document.getElementById(
+      "searchSection"
+    );
+
+  const row =
+    document.getElementById(
+      "searchRow"
+    );
+
+
+  if(!query){
+
+    section.classList.remove("show");
+
+    row.innerHTML = "";
+
+    return;
+  }
+
+
+  if(!currentUser) return;
+
+
+  section.classList.add("show");
+
+
+  row.innerHTML =
+    `<div class="loading">
+      <div class="spinner"></div>
+      Searching movies...
+    </div>`;
+
+
+  const movies =
+    await omdbSearch(query);
+
+
+  if(!currentUser) return;
+
+
+  const filteredMovies =
+    await filterMoviesByUserAge(
+      movies
+    );
+
+
+  if(!currentUser) return;
+
+
+  renderMovies(
+    row,
+    filteredMovies.slice(0,20)
+  );
+
+
+  section.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+
+/* =========================================================
+   RESTORE LOGIN
+========================================================= */
+
+(function restoreUser(){
+
+  try{
+
+    const saved =
+      sessionStorage.getItem(
+        "masterflixUser"
+      );
+
+
+    if(!saved) return;
+
+
+    const parsed =
+      JSON.parse(saved);
+
+
+    const parsedAge =
+      Number(parsed?.age);
+
+
+    if(
+      parsed &&
+      typeof parsed.name === "string" &&
+      parsed.name.trim() &&
+      Number.isInteger(parsedAge) &&
+      parsedAge >= 1 &&
+      parsedAge <= 120
+    ){
+
+      currentUser = {
+
+        name:
+          parsed.name.trim(),
+
+        age:
+          parsedAge
+
+      };
+
+
+      startApp();
+    }
+
+
+  }catch(error){
+
+    console.warn(
+      "Saved profile could not be restored.",
+      error
+    );
+
+
+    /*
+      FIX:
+      The profile is stored in sessionStorage,
+      so remove it from sessionStorage too.
+    */
+
+    sessionStorage.removeItem(
+      "masterflixUser"
+    );
+
+  }
+
+})();
+
+
+/* =========================================================
+   START FLOATING POSTERS
+========================================================= */
+
+loadFloatingMoviePosters();
+
+</script>
+
+</body>
+</html>
